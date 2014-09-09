@@ -1,33 +1,38 @@
-swagger: 2.0
+swagger: 2
 info:
-  version: "0.0.1"
-  title: Hello World App
-# during dev, should point to your local machine
+  version: 0.0.1
+  title: Eats - A Sample App
 host: localhost
-# basePath prefixes all resource paths 
 basePath: /
-# 
 schemes:
-  # tip: remove http to make production-grade
   - http
   - https
-# format of bodies a client can send (Content-Type)
 consumes:
   - application/json
-# format of the responses to the client (Accepts)
 produces:
   - application/json
-x-volos-resources: {}
+x-volos-resources:
+  cache:
+    provider: volos-cache-memory
+    options:
+      name: name
+      ttl: 10000
+  quota:
+    provider: volos-quota-memory
+    options:
+      timeUnit: hour
+      interval: 1
+      allow: 2
 paths:
   /hello:
-    # binds a127 app logic to a route
     x-swagger-router-controller: hello_world
     x-volos-authorizations: {}
     x-volos-apply: {}
     get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
+      description: "Returns 'Hello' to the caller"
       operationId: hello
+      produces:
+        - application/json
       parameters:
         - name: name
           in: query
@@ -37,16 +42,159 @@ paths:
       responses:
         "200":
           description: Success
-          schema:
-            # a pointer to a definition
-            $ref: HelloWorldResponse
-        # responses may fall through to errors
+          schema: {}
         default:
           description: Error
-          schema:
-            $ref: ErrorResponse
-# complex objects have schema definitions
+          schema: {}
+  /restaurants:
+    x-swagger-router-controller: restaurants
+    x-volos-authorizations: {}
+    x-volos-apply: {}
+    get:
+      description: Returns a list of restaurants
+      operationId: getRestaurants
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema: {}
+        default:
+          description: Error
+          schema: {}
+  /restaurants/{id}:
+    x-swagger-router-controller: restaurants
+    x-volos-authorizations: {}
+    x-volos-apply: {}
+    get:
+      description: Returns a single restaurant and its reviews
+      operationId: getRestaurantByID
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: The restID of the restaurant to select
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Success
+          schema: {}
+        "404":
+          description: Restaurant not found
+          schema: {}
+        "500":
+          description: Invalid restaurant ID supplied
+          schema: {}
+        default:
+          description: Error
+          schema: {}
+  /reviews:
+    x-swagger-router-controller: reviews
+    x-volos-authorizations: {}
+    x-volos-apply: {}
+    get:
+      description: Returns a list of reviews
+      operationId: getReviews
+      produces:
+        - application/json
+      parameters:
+        - name: restID
+          in: query
+          description: Get reviews for a specific restaurant
+          required: false
+          type: number
+        - name: rating
+          in: query
+          description: Get reviews with a specific rating
+          required: false
+          type: number
+        - name: reviewer
+          in: query
+          description: Get reviews by a specific user
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema: {}
+        default:
+          description: Error
+          schema: {}
+    post:
+      x-volos-apply:
+        quota: []
+      description: Posts a new review
+      operationId: postReview
+      parameters:
+        - name: body
+          in: body
+          description: Post review and rating
+          required: false
+          schema: 
+            $ref: "#/definitions/Review"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema: {}
+        default:
+          description: Error
+          schema: {}
+  /users:
+    x-swagger-router-controller: users
+    x-volos-authorizations: {}
+    x-volos-apply:
+      cache: []
+    get:
+      description: Returns a list of users
+      operationId: getUsers
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema: {}
+        default:
+          description: Error
+          schema: {}
+  /users/{username}:
+    x-swagger-router-controller: users
+    x-volos-authorizations: {}
+    x-volos-apply: {}
+    get:
+      description: Returns a single user
+      operationId: getUserByID
+      produces:
+        - application/json
+      parameters:
+        - name: username
+          in: path
+          description: The username of the user
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema: {}
+        default:
+          description: Error
+          schema: {}
 definitions:
+  Review:
+    properties:
+      title:
+        type: string
+      restID:
+        type: integer
+      rating:
+        type: integer
+      reviewer:
+        type: string
+      body:
+        type: string
   HelloWorldResponse:
     required:
       - message
