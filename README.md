@@ -1,7 +1,7 @@
 apigee-api-workshop
 ===================
 
-## Steps
+## Workshop Steps
 
 1. Install Apigee 127 Globally
 
@@ -55,7 +55,32 @@ You should see the API on the following URL:
 
     http://localhost:10010/
 
+## Run the full project
+
+Greg Rewis, the workshop teacher, gave us a link to download the full project.
+
+The main difference is that in the full project a graphical interface is implemented.
+
+To run it do the following:
+
+1. Unzip `api-workshop.zip` file.
+2. Do steps 3 to 13 of `Workshop steps`
+3. In a terminal, navigate to the folder.
+4. Run the following command:
+
+  ```bash
+  $ node app.js
+  ```
+
+You should see the app on the following URL:
+
+    http://localhost:10010/
+
 ## Tools
 
-- Swagger Editor: http://localhost:62463/
-- App URL: http://localhost:10010/
+- Edit the swagger file with:
+  ```bash
+  $ a127 project edit
+  ```
+  - Swagger Editor: http://localhost:62463/
+
