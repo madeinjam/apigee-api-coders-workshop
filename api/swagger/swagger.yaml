@@ -49,7 +49,9 @@ paths:
   /restaurants:
     x-swagger-router-controller: restaurants
     x-volos-authorizations: {}
-    x-volos-apply: {}
+    x-volos-apply:
+      cache: []
+      quota: []
     get:
       description: Returns a list of restaurants
       operationId: getRestaurants
